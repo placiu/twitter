@@ -23,7 +23,7 @@ class Tweet
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             $loadedTweet = new Tweet();
             $loadedTweet->id = $row['id'];
-            $loadedTweet->userId = $row['userId'];
+            $loadedTweet->userId = $row['user_id'];
             $loadedTweet->text = $row['text'];
             $loadedTweet->creationDate = $row['creation_date'];
             return $loadedTweet;

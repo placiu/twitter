@@ -58,14 +58,23 @@ class User
 
             $sql = 'INSERT INTO users(id, email, username, hash_pass) VALUES(null, :email, :username, :pass)';
             $stmt = $conn->prepare($sql);
-            $result = $stmt->execute(['email' => $this->email, 'username' => $this->username, 'pass' => $this->hashPass]);
+            $result = $stmt->execute([
+                'email' => $this->email,
+                'username' => $this->username,
+                'pass' => $this->hashPass
+            ]);
             if ($result !== false) {
                 $this->id = $conn->lastInsertId();
                 return true;
             }
         } else {
             $stmt = $conn->prepare('UPDATE users SET email=:email, username=:username, hash_pass=:hash_pass WHERE  id=:id ');
-            $result = $stmt->execute(['email' => $this->email, 'username' => $this->username, 'hash_pass' => $this->hashPass, 'id' => $this->id]);
+            $result = $stmt->execute([
+                'email' => $this->email,
+                'username' => $this->username,
+                'hash_pass' => $this->hashPass,
+                'id' => $this->id
+            ]);
             if ($result === true) {
                 return true;
             }

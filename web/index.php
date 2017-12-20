@@ -11,7 +11,7 @@ if (isset($_SESSION['user'])) {
     echo '<a href=\'index.php\'>Strona Główna</a> ';
     echo $user->getUsername(). " (<a href='logout.php'>Wyloguj</a>)";
 
-    include('tweet.php');
+    include('tweets.php');
 
 }
 else {
