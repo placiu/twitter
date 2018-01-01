@@ -53,7 +53,7 @@ class Tweet
     static public function loadAllTweets(PDO $conn)
     {
         $tweets = [];
-        $sql = "SELECT * FROM tweets";
+        $sql = "SELECT * FROM tweets ORDER BY creation_date DESC";
         $result = $conn->query($sql);
         if ($result !== false && $result->rowCount() > 0) {
             foreach ($result as $row) {
@@ -116,6 +116,3 @@ class Tweet
     }
 
 }
-//require_once ('connection.php');
-//var_dump(Tweet::loadAllTweets($conn));
-//var_dump(Tweet::loadAllTweetsByUserId($conn, 2));

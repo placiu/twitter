@@ -7,22 +7,24 @@ require_once '../src/Comment.php';
 
 if (isset($_GET['id']) AND !empty($_GET['id']) AND is_numeric($_GET['id'])) {
 
-    $tweet_id = $_GET['id'];
-    $tweet = Tweet::loadTweetById($conn, $tweet_id);
-    $tweet_id = $tweet->getId();
-    $tweet_userId = $tweet->getUserId();
-    $tweet_text = $tweet->getText();
-    $tweet_creation_date = $tweet->getCreationDate();
-    $user = User::loadUserById($conn, $tweet_userId);
-    $userName = $user->getUsername();
+    $tweetId = $_GET['id'];
+
+    $tweet = Tweet::loadTweetById($conn, $tweetId);
+    $tweetUserId = $tweet->getUserId();
+    $tweetText = $tweet->getText();
+    $tweetCreationDate = $tweet->getCreationDate();
+
+    $tweetUser = User::loadUserById($conn, $tweetUserId);
+    $tweetUserName = $tweetUser->getUsername();
 
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         if (isset($_POST['text']) AND !empty($_POST['text'])) {
 
             $comment = new Comment();
-            $postId = $comment->setPostId($tweet_id);
-            $creationDate = $comment->setCreationDate('2017-12-22 07:13:26');   // USTAWIC DATE !!!!!!
+            $postId = $comment->setPostId($tweetId);
+            $date = date('Y-m-d H:i:s', time());
+            $creationDate = $comment->setCreationDate($date);
             $text = $comment->setText($_POST['text']);
             $comment->saveToDB($conn);
 
@@ -30,27 +32,26 @@ if (isset($_GET['id']) AND !empty($_GET['id']) AND is_numeric($_GET['id'])) {
 
     }
 
-    echo $tweet_text . '<br>';
-    echo $tweet_creation_date . ' - ' . $userName . '<br><br>';
+    echo '<h2>Tweet</h2>';
+    echo $tweetText . '<br>';
+    echo $tweetCreationDate . ' - ' . $tweetUserName . '<br>';
+    echo '<h3>Comments</h3>';
 
-    $comments = Comment::loadAllCommentsByPostId($conn, $tweet_id);
+    $comments = Comment::loadAllCommentsByPostId($conn, $tweetId);
+
     foreach ($comments as $comment) {
-        $user = User::loadUserById($conn, $comment->getUserId());
-        $userName = $user->getUsername();
-        echo "<p>" . $comment->getText() . '<br>' . $comment->getCreationDate() . " - $userName</p>";
+        $commentUser = User::loadUserById($conn, $comment->getUserId());
+        echo "<p>" . $comment->getText() . '<br>' . $comment->getCreationDate();
+        echo " - <a href=\"user.php?id=" . $commentUser->getId() . " \">" . $commentUser->getUsername() . "</a>";
     }
-
 
     ?>
 
-    <p>
-        <form action="" method="post">
-            <textarea rows="4" cols="50" name="text" maxlength="140"></textarea>
-    <p><input type="submit" value="Send"></p>
+    <form action="" method="post">
+        <p><textarea rows="4" cols="50" name="text" maxlength="140"></textarea></p>
+        <p><input type="submit" value="Send"></p>
     </form>
-    </p>
 
     <?php
-
 
 }

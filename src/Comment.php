@@ -17,10 +17,10 @@ class Comment
         $this->text = '';
     }
 
-    static public function loadCommentQuantityByPostId($conn, $postId) // połączyć z loadAllCommentsByPostId
+    static public function loadCommentQuantityByPostId($conn, $postId)
     {
-        $stmt = $conn->prepare('SELECT * FROM comment WHERE post_id = :id');
-        $result = $stmt->execute(['id' => $postId]);
+        $stmt = $conn->prepare('SELECT * FROM comment WHERE post_id = :postId');
+        $result = $stmt->execute(['postId' => $postId]);
         if ($result === true) {
             return $quantity = $stmt->rowCount();
         }

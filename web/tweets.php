@@ -27,20 +27,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 ?>
 
-    <p>
-    <form action="" method="post">
-    <textarea rows="4" cols="50" name="text" maxlength="140"></textarea>
+<form action="" method="post">
+    <p><textarea rows="4" cols="50" name="text" maxlength="140"></textarea></p>
     <p><input type="submit" value="Tweet"></p>
-    </form>
-    </p>
+</form>
 
 <?php
 
 $tweets = Tweet::loadAllTweets($conn);
 foreach ($tweets as $tweet) {
-    $user = User::loadUserById($conn, $tweet->getUserId());
+    $tweetUser = User::loadUserById($conn, $tweet->getUserId());
     $commentQuantity = Comment::loadCommentQuantityByPostId($conn, $tweet->getId());
-    echo "<p><a href=\"tweet.php?id=" . $tweet->getId() . "\">" . $user->getUsername() . ' ' . $tweet->getText() . ' ' . $tweet->getCreationDate() . '(' . $commentQuantity . ')' . "</a>";
+    echo "<p><a href=\"tweet.php?id=" . $tweet->getId() . "\">" . $tweet->getText() . ' ' . $tweet->getCreationDate() . '(' . $commentQuantity . ')' . "</a>";
+    echo " - <a href=\"user.php?id=" . $tweetUser->getId() . " \">" . $tweetUser->getUsername() . "</a>";
 }
 
 ?>

@@ -172,5 +172,3 @@ class User
         }
     }
 }
-//require_once ('connection.php');
-//var_dump(User::loadAllUsers($conn));
