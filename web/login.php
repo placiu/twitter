@@ -1,9 +1,8 @@
 <?php
-
 require_once '../src/connection.php';
 require_once '../src/User.php';
 
-if ('POST' === $_SERVER['REQUEST_METHOD']) {
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if (isset($_POST['username']) && isset($_POST['password'])) {
         $username = $_POST['username'];
@@ -19,7 +18,7 @@ if ('POST' === $_SERVER['REQUEST_METHOD']) {
 
         if (password_verify($password, $user->getPassword())) {
             $_SESSION['user'] = $user->getId();
-
+            header("location:index.php");
         } else {
             echo '<p>Zły login lub hasło</p>';
             echo '<p><a href="index.php">Powrót</a>';
@@ -28,17 +27,10 @@ if ('POST' === $_SERVER['REQUEST_METHOD']) {
     }
 
 } else {
+
     ?>
 
-    <!DOCTYPE html>
-
-    <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>Logowanie</title>
-    </head>
-    <body>
-    <form method="POST" action="">
+    <form method="POST" action="" style="padding: 10px">
         <p>
             <label>
                 Login: <input name="username" type="text">
@@ -53,8 +45,7 @@ if ('POST' === $_SERVER['REQUEST_METHOD']) {
             <input type="submit">
         </p>
     </form>
-    </body>
-    </html>
 
     <?php
+
 }

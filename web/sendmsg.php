@@ -1,40 +1,53 @@
-<?php
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Wiadomości</title>
+</head>
+<body>
 
+<?php
 session_start();
 require_once '../src/connection.php';
 require_once '../src/User.php';
 require_once '../src/Message.php';
 
-if (isset($_GET['id']) AND !empty($_GET['id']) AND is_numeric($_GET['id'])) {
+if (isset($_SESSION['user']) AND isset($_GET['id']) AND !empty($_GET['id']) AND is_numeric($_GET['id'])) {
+
+    // nav --------------
+    include ('menu.php');
+    // ------------------
 
     $idReceiver = $_GET['id'];
     $userReceiver = User::loadUserById($conn, $idReceiver);
+    $userReceiverUserName = $userReceiver->getUsername();
 
-    echo '<h3>Send Message to <u>' . $userReceiver->getUsername() . '</u></h3>';
+    echo "<h3>Send Message to <u>$userReceiverUserName</u></h3>";
 
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         if (isset($_POST['text']) AND !empty($_POST['text'])) {
 
-            (isset($_GET['refid']) AND !empty($_GET['refid'])) ? $refId = $_GET['refid'] : $refId = 0;
             $msg = $_POST['text'];
+            (isset($_GET['refid'])) ? $refId = $_GET['refid'] : $refId = 0;
+
             $message = new Message();
-            $refId = $message->setRefId($refId);
-            $idReceiver = $message->setIdReceiver($idReceiver);
-            $msg = $message->setMsg($msg);
+            $message->setRefId($refId);
+            $message->setIdSender($userId);
+            $message->setIdReceiver($idReceiver);
+            $message->setMsg($msg);
             $date = date('Y-m-d H:i:s', time());
-            $creationDate = $message->setCreationDate($date);
-            if ($message->saveToDB($conn)) {
+            $message->setCreationDate($date);
+            $send = $message->saveToDB($conn);
+            if ($send) {
                 echo 'Message send!';
-            }
-            else {
+            } else {
                 echo 'Error';
             }
 
         }
 
-    }
-    else {
+    } else {
 
         ?>
 
@@ -48,7 +61,17 @@ if (isset($_GET['id']) AND !empty($_GET['id']) AND is_numeric($_GET['id'])) {
 
     }
 
-}
-else {
+    if(strpos($_SERVER['HTTP_REFERER'], 'refid')) {
+        echo "<p><a href=\"msg.php\">back</a></p>";
+    } else {
+        echo "<p><a href=\"user.php?id=$idReceiver\">back</a></p>";
+    }
+
+
+} else {
     header("location:index.php");
 }
+
+?>
+</body>
+</html>

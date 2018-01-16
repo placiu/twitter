@@ -34,7 +34,7 @@ class Tweet
     static public function loadAllTweetsByUserId(PDO $conn, $userId)
     {
         $ret = [];
-        $stmt = $conn->prepare('SELECT * FROM tweets WHERE user_id = :user_id');
+        $stmt = $conn->prepare('SELECT * FROM tweets WHERE user_id = :user_id ORDER BY id DESC');
         $stmt->execute(['user_id' => $userId]);
         $result = $stmt->fetchAll();
         if ($result !== false && $stmt->rowCount() > 0) {
@@ -53,7 +53,7 @@ class Tweet
     static public function loadAllTweets(PDO $conn)
     {
         $tweets = [];
-        $sql = "SELECT * FROM tweets ORDER BY creation_date DESC";
+        $sql = "SELECT * FROM tweets ORDER BY id DESC";
         $result = $conn->query($sql);
         if ($result !== false && $result->rowCount() > 0) {
             foreach ($result as $row) {
@@ -72,7 +72,11 @@ class Tweet
     {
         $sql = 'INSERT INTO tweets(id, user_id, text, creation_date) VALUES(null, :userId, :text, :creationDate)';
         $stmt = $conn->prepare($sql);
-        $result = $stmt->execute(['userId' => $this->userId, 'text' => $this->text, 'creationDate' => $this->creationDate]);
+        $result = $stmt->execute([
+            'userId' => $this->userId,
+            'text' => $this->text,
+            'creationDate' => $this->creationDate
+        ]);
         if ($result !== false) {
             $this->id = $conn->lastInsertId();
             return true;

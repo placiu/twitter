@@ -4,7 +4,7 @@ class Comment
 {
     private $id;
     private $userId;
-    private $postId;
+    private $tweetId;
     private $creationDate;
     private $text;
 
@@ -12,15 +12,15 @@ class Comment
     {
         $this->id = -1;
         $this->userId = 0;
-        $this->postId = 0;
+        $this->tweetId = 0;
         $this->creationDate = 0;
         $this->text = '';
     }
 
-    static public function loadCommentQuantityByPostId($conn, $postId)
+    static public function loadCommentQuantityByTweetId($conn, $tweetId)
     {
-        $stmt = $conn->prepare('SELECT * FROM comment WHERE post_id = :postId');
-        $result = $stmt->execute(['postId' => $postId]);
+        $stmt = $conn->prepare('SELECT * FROM comment WHERE tweet_id = :tweetId');
+        $result = $stmt->execute(['tweetId' => $tweetId]);
         if ($result === true) {
             return $quantity = $stmt->rowCount();
         }
@@ -35,7 +35,7 @@ class Comment
             $loadedComments = new Comment();
             $loadedComments->id = $row['id'];
             $loadedComments->userId = $row['user_id'];
-            $loadedComments->postId = $row['post_id'];
+            $loadedComments->tweetId = $row['tweet_id'];
             $loadedComments->creationDate = $row['creation_date'];
             $loadedComments->text = $row['text'];
             return $loadedComments;
@@ -43,18 +43,18 @@ class Comment
         return null;
     }
 
-    static public function loadAllCommentsByPostId(PDO $conn, $postId)
+    static public function loadAllCommentsByTweetId(PDO $conn, $tweetId)
     {
         $ret = [];
-        $stmt = $conn->prepare('SELECT * FROM comment WHERE post_id = :post_id ORDER BY creation_date DESC');
-        $stmt->execute(['post_id' => $postId]);
+        $stmt = $conn->prepare('SELECT * FROM comment WHERE tweet_id = :tweet_id ORDER BY creation_date ASC');
+        $stmt->execute(['tweet_id' => $tweetId]);
         $result = $stmt->fetchAll();
         if ($result !== false && $stmt->rowCount() > 0) {
             foreach ($result as $row) {
                 $loadedComments = new Comment();
                 $loadedComments->id = $row['id'];
                 $loadedComments->userId = $row['user_id'];
-                $loadedComments->postId = $row['post_id'];
+                $loadedComments->tweetId = $row['tweet_id'];
                 $loadedComments->creationDate = $row['creation_date'];
                 $loadedComments->text = $row['text'];
                 $ret[] = $loadedComments;
@@ -65,11 +65,11 @@ class Comment
 
     public function saveToDB(PDO $conn)
     {
-        $sql = 'INSERT INTO comment(id, user_id, post_id, creation_date, text) VALUES(null, :userId, :postId, :creationDate, :text)';
+        $sql = 'INSERT INTO comment(id, user_id, tweet_id, creation_date, text) VALUES(null, :userId, :tweetId, :creationDate, :text)';
         $stmt = $conn->prepare($sql);
         $result = $stmt->execute([
             'userId' => $_SESSION['user'],
-            'postId' => $this->getPostId(),
+            'tweetId' => $this->getTweetId(),
             'creationDate' => $this->getCreationDate(),
             'text' => $this->getText()
         ]);
@@ -95,14 +95,14 @@ class Comment
         $this->userId = $userId;
     }
 
-    public function getPostId()
+    public function getTweetId()
     {
-        return $this->postId;
+        return $this->tweetId;
     }
 
-    public function setPostId($postId)
+    public function setTweetId($tweetId)
     {
-        $this->postId = $postId;
+        $this->tweetId = $tweetId;
     }
 
     public function getCreationDate()

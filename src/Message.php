@@ -11,7 +11,7 @@ class Message
     private $creationDate;
     private $read;
 
-    public function __construct ()
+    public function __construct()
     {
         $this->id = -1;
         $this->refId = 0;
@@ -35,7 +35,7 @@ class Message
     static public function markAsRead($conn, $userId)
     {
 
-        $sql = 'UPDATE messages SET `read` = 1 WHERE id_sender = :id OR id_receiver = :id';
+        $sql = 'UPDATE messages SET `read` = 1 WHERE id_receiver = :id AND `read` = 0';
         $stmt = $conn->prepare($sql);
         $result = $stmt->execute([
             'id' => $userId,
@@ -68,6 +68,7 @@ class Message
         }
         return $ret;
     }
+
     static public function loadRefMsgByMsgId(PDO $conn, $msgId)
     {
         $ret = [];

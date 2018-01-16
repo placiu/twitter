@@ -1,43 +1,67 @@
-<?php
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Wiadomości</title>
+</head>
+<body>
 
+<?php
 session_start();
 require_once '../src/connection.php';
 require_once '../src/User.php';
 require_once '../src/Message.php';
 
-echo '<h2>Wiadomosci:</h2>';
+if (isset($_SESSION['user'])) {
 
-$messages = Message::loadMainMsgByUserId($conn, $_SESSION['user']);
+    // nav --------------
+    include ('menu.php');
+    // ------------------
 
-foreach ($messages as $message) {
+    echo '<h3>Wiadomosci:</h3>';
 
-    $idSender = $message->getIdSender();
-    $idReceiver = $message->getIdReceiver();
+    $messages = Message::loadMainMsgByUserId($conn, $_SESSION['user']);
+    foreach ($messages as $message) {
+        $messageId = $message->getId();
+        $messageIdSender = $message->getIdSender();
+        $messageIdReceiver = $message->getIdReceiver();
+        $messageMsg = $message->getMsg();
+        $messageCreationDate = $message->getCreationDate();
+        $messageRead = $message->getRead();
 
-    $sender = User::loadUserById($conn, $idSender);
-    $reveiver = User::loadUserById($conn, $idReceiver);
+        $messageSender = User::loadUserById($conn, $messageIdSender);
+        $senderUserName = $messageSender->getUsername();
+        $receiver = User::loadUserById($conn, $messageIdReceiver);
+        $receiverUserName = $receiver->getUsername();
 
-    ($message->getRead() == '0') ? $new = '<p><b>NEW!:</b> ' : $new = '';
-    ($message->getIdReceiver() == $_SESSION['user']) ? $respond = ' ' . $sender->getUsername() . ' - <a href="sendmsg.php?id=' . $idSender . '&refid=' . $message->getId() . '">Odpowiedz</a>' : $respond = ' do: <u>' . $reveiver->getUsername() . '</u>';
+        ($messageRead == 0 AND $messageIdReceiver == $_SESSION['user']) ? $new = "<div style = \"background-color: lightgreen; width: 330px; margin-top: 10px; margin-bottom: 10px; padding: 10px\">" : $new = '<div style = "width: 330px; margin-top: 10px; margin-bottom: 10px;">';
+        ($messageIdReceiver == $_SESSION['user']) ? $respond = " $senderUserName - <a href=\"sendmsg.php?id=$messageIdSender&refid=$messageId\">Odpowiedz</a>" : $respond = " do: <u>$receiverUserName</u>";
 
-    echo '<p>' . $new . $message->getMsg() . '<br><small>' . $message->getCreationDate();
-    echo $respond . '</small></p>';
+        echo "$new $messageMsg<br><small>$messageCreationDate $respond</small></div>";
 
-    $refmsgs = Message::loadRefMsgByMsgId($conn, $message->getId());
+        $refMsgs = Message::loadRefMsgByMsgId($conn, $messageId);
+        foreach ($refMsgs as $refMsg) {
+            $refMsgIdSender = $refMsg->getIdSender();
+            $refMsgIdReceiver = $refMsg->getIdReceiver();
+            $refMsgMsg = $refMsg->getMsg();
+            $refMsgCreationDate = $refMsg->getCreationDate();
+            $refMsgRead = $refMsg->getRead();
 
-    foreach ($refmsgs as $refmsg) {
+            $refMsgSender = User::loadUserById($conn, $refMsgIdSender);
+            $refMsgSenderUserName = $refMsgSender->getUsername();
 
-        $idSender = $refmsg->getIdSender();
-        $user = User::loadUserById($conn, $idSender);
+            ($refMsgRead == '0' AND $refMsgIdReceiver == $_SESSION['user']) ? $new = "<div style = \"background-color: lightgreen; width: 300px; margin-left: 30px; margin-top: 10px; margin-bottom: 10px; padding: 10px\">" : $new = "<div style=\"margin-left: 30px; margin-top: 10px; margin-bottom: 10px\">";
+            ($refMsgIdReceiver == $_SESSION['user']) ? $respond = " - <a href=\"sendmsg.php?id=$refMsgIdSender&refid=$messageId\">Odpowiedz</a>" : $respond = '';
 
-        ($refmsg->getRead() == '0') ? $new = '<p><b>Unread!</b> ' : $new = '';
-        ($refmsg->getIdReceiver() == $_SESSION['user']) ? $respond = ' - <a href="sendmsg.php?id=' . $idSender . '&refid=' . $message->getId() . '">Odpowiedz</a>' : $respond = '';
-
-        echo '<p><div style="margin-left: 30">' . $new . $refmsg->getMsg() . '<br><small>' . $refmsg->getCreationDate() . ' - ' . $user->getUsername();
-        echo $respond . '</small></div></p>';
-
+            echo "$new $refMsgMsg<br><small>$refMsgCreationDate - $refMsgSenderUserName $respond</small></div>";
+        }
     }
 
     Message::markAsRead($conn, $_SESSION['user']);
 
 }
+
+?>
+
+</body>
+</html>
