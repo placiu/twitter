@@ -16,7 +16,6 @@ if (isset($_SESSION['user']) AND isset($_GET['id']) AND !empty($_GET['id']) AND 
 
     // nav --------------
     include ('menu.php');
-    // ------------------
 
     $idReceiver = $_GET['id'];
     $userReceiver = User::loadUserById($conn, $idReceiver);

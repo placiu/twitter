@@ -16,7 +16,6 @@ if (isset($_SESSION['user'])) {
 
     // nav --------------
     include ('menu.php');
-    // ------------------
 
     echo '<h3>Wiadomosci:</h3>';
 
@@ -37,7 +36,7 @@ if (isset($_SESSION['user'])) {
         ($messageRead == 0 AND $messageIdReceiver == $_SESSION['user']) ? $new = "<div style = \"background-color: lightgreen; width: 330px; margin-top: 10px; margin-bottom: 10px; padding: 10px\">" : $new = '<div style = "width: 330px; margin-top: 10px; margin-bottom: 10px;">';
         ($messageIdReceiver == $_SESSION['user']) ? $respond = " $senderUserName - <a href=\"sendmsg.php?id=$messageIdSender&refid=$messageId\">Odpowiedz</a>" : $respond = " do: <u>$receiverUserName</u>";
 
-        echo "$new $messageMsg<br><small>$messageCreationDate $respond</small></div>";
+        echo "$new $messageMsg<br><small>$messageCreationDate - $respond</small></div>";
 
         $refMsgs = Message::loadRefMsgByMsgId($conn, $messageId);
         foreach ($refMsgs as $refMsg) {

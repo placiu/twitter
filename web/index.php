@@ -19,10 +19,10 @@ if (isset($_SESSION['user'])) {
     // tweets -----------
     include('tweets.php');
 
-
 } else {
     echo "<a href='register.php'>rejestracja</a>";
     include('login.php');
+
 }
 ?>
 

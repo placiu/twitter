@@ -18,7 +18,6 @@ if (isset($_SESSION['user'])) {
 
     // nav --------------
     include ('menu.php');
-    // ------------------
 
     if (isset($_GET['id']) AND !empty($_GET['id']) AND is_numeric($_GET['id'])) {
 

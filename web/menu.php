@@ -8,3 +8,4 @@ echo "<a href=\"index.php\">home</a>";
 echo " | <a href=\"msg.php\">wiadomości $unreadmsg</a> | ";
 echo "<a href=\"user.php?id=$userId\">$userUserName</a> ";
 echo "(<a href=\"logout.php\">wyloguj</a>)";
+

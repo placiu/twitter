@@ -19,7 +19,6 @@ if (isset($_SESSION['user']) AND isset($_GET['id']) AND !empty($_GET['id']) AND 
 
     // nav --------------
     include ('menu.php');
-    // ------------------
 
     $id = $_GET['id'];
     $user = User::loadUserById($conn, $id);
@@ -39,7 +38,7 @@ if (isset($_SESSION['user']) AND isset($_GET['id']) AND !empty($_GET['id']) AND 
         $tweetCreationDate = $tweet->getCreationDate();
         $commentQuantity = Comment::loadCommentQuantityByTweetId($conn, $tweetId);
         echo "<div style='width: 300px; background-color: lightblue; margin-bottom: 10px; padding: 5px'>";
-        echo "$tweetText<br><small>$tweetCreationDate | <a href=\"comments.php?id=$tweetId\">Komentarze ($commentQuantity)</a></small></div>";
+        echo "$tweetText<br><small>$tweetCreationDate <a href=\"comments.php?id=$tweetId\">Komentarze ($commentQuantity)</a></small></div>";
     }
 
 } else {
