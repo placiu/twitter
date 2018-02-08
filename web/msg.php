@@ -19,7 +19,7 @@ if (isset($_SESSION['user'])) {
 
     echo '<h3>Wiadomosci:</h3>';
 
-    $messages = Message::loadMainMsgByUserId($conn, $_SESSION['user']);
+    $messages = Message::loadMainMsgByUserId($conn, $userId);
     foreach ($messages as $message) {
         $messageId = $message->getId();
         $messageIdSender = $message->getIdSender();
@@ -33,8 +33,8 @@ if (isset($_SESSION['user'])) {
         $receiver = User::loadUserById($conn, $messageIdReceiver);
         $receiverUserName = $receiver->getUsername();
 
-        ($messageRead == 0 AND $messageIdReceiver == $_SESSION['user']) ? $new = "<div style = \"background-color: lightgreen; width: 330px; margin-top: 10px; margin-bottom: 10px; padding: 10px\">" : $new = '<div style = "width: 330px; margin-top: 10px; margin-bottom: 10px;">';
-        ($messageIdReceiver == $_SESSION['user']) ? $respond = " $senderUserName - <a href=\"sendmsg.php?id=$messageIdSender&refid=$messageId\">Odpowiedz</a>" : $respond = " do: <u>$receiverUserName</u>";
+        ($messageRead == 0 AND $messageIdReceiver == $userId) ? $new = "<div style = \"background-color: lightgreen; width: 330px; margin-top: 10px; margin-bottom: 10px; padding: 10px\">" : $new = '<div style = "width: 330px; margin-top: 10px; margin-bottom: 10px;">';
+        ($messageIdReceiver == $userId) ? $respond = " <a href='user.php?id=$messageIdSender'>$senderUserName</a> - <a href=\"sendmsg.php?id=$messageIdSender&refid=$messageId\">Odpowiedz</a>" : $respond = " do: <u><a href='user.php?id=$messageIdReceiver'>$receiverUserName</a></u>";
 
         echo "$new $messageMsg<br><small>$messageCreationDate - $respond</small></div>";
 
@@ -49,14 +49,14 @@ if (isset($_SESSION['user'])) {
             $refMsgSender = User::loadUserById($conn, $refMsgIdSender);
             $refMsgSenderUserName = $refMsgSender->getUsername();
 
-            ($refMsgRead == '0' AND $refMsgIdReceiver == $_SESSION['user']) ? $new = "<div style = \"background-color: lightgreen; width: 300px; margin-left: 30px; margin-top: 10px; margin-bottom: 10px; padding: 10px\">" : $new = "<div style=\"margin-left: 30px; margin-top: 10px; margin-bottom: 10px\">";
-            ($refMsgIdReceiver == $_SESSION['user']) ? $respond = " - <a href=\"sendmsg.php?id=$refMsgIdSender&refid=$messageId\">Odpowiedz</a>" : $respond = '';
+            ($refMsgRead == '0' AND $refMsgIdReceiver == $userId) ? $new = "<div style = \"background-color: lightgreen; width: 300px; margin-left: 30px; margin-top: 10px; margin-bottom: 10px; padding: 10px\">" : $new = "<div style=\"margin-left: 30px; margin-top: 10px; margin-bottom: 10px\">";
+            ($refMsgIdReceiver == $userId) ? $respond = " - <a href=\"sendmsg.php?id=$refMsgIdSender&refid=$messageId\">Odpowiedz</a>" : $respond = '';
 
             echo "$new $refMsgMsg<br><small>$refMsgCreationDate - $refMsgSenderUserName $respond</small></div>";
         }
     }
 
-    Message::markAsRead($conn, $_SESSION['user']);
+    Message::markAsRead($conn, $userId);
 
 }
 

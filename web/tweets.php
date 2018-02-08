@@ -41,7 +41,7 @@ if (isset($_SESSION['user'])) {
         $commentQuantity = Comment::loadCommentQuantityByTweetId($conn, $tweet->getId());
 
         echo "<div style='width: 300px; background-color: lightblue; margin-bottom: 10px; padding: 5px'>";
-        echo "<div style='padding-bottom: 10px; padding-top: 10px'>$tweetText</div>";
+        echo "<div style='padding-bottom: 10px; padding-top: 5px'>$tweetText</div>";
         echo "<div><small>$tweetCreationDate</small> - ";
         echo "<a href=\"user.php?id=$tweetUserId\">$tweetUserUserName</a></div>";
         echo "<small><a href=\"comments.php?id=$tweetId\">Komentarze</a> ($commentQuantity)</small></div>";

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Czas generowania: 16 Sty 2018, 10:41
+-- Czas generowania: 08 Lut 2018, 09:19
 -- Wersja serwera: 5.7.20
 -- Wersja PHP: 7.0.25
 
@@ -62,7 +62,7 @@ CREATE TABLE `tweets` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `text` text,
-  `creation_date` date DEFAULT NULL
+  `creation_date` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -132,13 +132,13 @@ ALTER TABLE `messages`
 -- AUTO_INCREMENT dla tabeli `tweets`
 --
 ALTER TABLE `tweets`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT dla tabeli `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- Ograniczenia dla zrzutów tabel

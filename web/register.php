@@ -21,21 +21,20 @@ if ('POST' === $_SERVER['REQUEST_METHOD']) {
 
     if (!isset($username) AND empty($username)) {
         $errors .= 'Nie podałeś loginu! <br>';
-        $tmp = 1;
+    } elseif (User::loadUserByUsername($conn, $username) != null) {
+        $errors .= 'Użytkownik o podanym loginie już istnieje!<br>';
+    } elseif (!preg_match('/^(?=[a-z]{1})(?=.{4,20})(?=[^.]*\.?[^.]*$)(?=[^_]*_?[^_]*$)[\w.]+$/iD', $username)) {
+        $errors .= 'Nieprawidłowy login!<br>';
+    } elseif (!isset($email) AND empty($email)) {
+        $errors .= 'Nie podałeś adresu e-mail! <br>';
+    } elseif (User::loadUserByEmail($conn, $email) != null) {
+        $errors .= 'Użytkownik o podanym adresie email już istnieje<br>';
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $errors .= 'Nieprawidłowy adres email! <br>';
+    } elseif ($password1 == '') {
+        $errors .= 'Nie podałeś hasła! <br>';
     }
 
-
-
-
-    (isset($username) AND !empty($username)) ? $errors .= '' : $errors .= 'Nie podałeś loginu! <br>';
-    (User::loadUserByUsername($conn, $username) == null) ? $errors .= '' : $errors .= 'Użytkownik o podanym loginie już istnieje!<br>';
-    (preg_match('/^(?=[a-z]{1})(?=.{4,20})(?=[^.]*\.?[^.]*$)(?=[^_]*_?[^_]*$)[\w.]+$/iD', $username)) ? $errors .= '' : $errors .= 'Nieprawidłowy login!<br>';
-
-    (isset($email) AND !empty($email)) ? $errors .= '' : $errors .= 'Nie podałeś adresu e-mail! <br>';
-    (User::loadUserByEmail($conn, $email) == null) ? $errors .= '' : $errors .= 'Użytkownik o podanym adresie email już istnieje<br>';
-    (filter_var($email, FILTER_VALIDATE_EMAIL)) ? $errors .= '' : $errors .= 'Nieprawidłowy adres email! <br>';
-
-    (isset($password1) AND !empty($password1)) ? $errors .= '' : $errors .= 'Nie podałeś hasła! <br>';
     if ($password1 == $password2) {
         $password = $password1;
         $errors .= '';
