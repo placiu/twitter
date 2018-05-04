@@ -17,7 +17,27 @@ if ('POST' === $_SERVER['REQUEST_METHOD']) {
     $email = $_POST['email'];
     $password1 = $_POST['password1'];
     $password2 = $_POST['password2'];
+
     $errors = '';
+    registerValidation($username, $email, $password1, $password2);
+    echo '<p>' . $errors . '</p>';
+
+    if ($errors == '') {
+        $user = new User();
+        $user->setUsername($username);
+        $user->setEmail($email);
+        $user->setPassword($password1);
+        try {
+            $user->saveToDB($conn);
+            echo "Register OK";
+        } catch (PDOException $ex) {
+            echo "Error: " . $ex->getMessage();
+        }
+
+    }
+}
+
+function registerValidation($errors = '', $username, $email, $password1, $password2) {
 
     if (!isset($username) AND empty($username)) {
         $errors .= 'Nie podałeś loginu! <br>';
@@ -36,27 +56,12 @@ if ('POST' === $_SERVER['REQUEST_METHOD']) {
     }
 
     if ($password1 == $password2) {
-        $password = $password1;
         $errors .= '';
     } else {
         $errors .= 'Hasła nie pasują do siebie!<br>';
     }
 
-    echo '<p>' . $errors . '</p>';
-
-    if ($errors == '') {
-        $user = new User();
-        $user->setUsername($username);
-        $user->setEmail($email);
-        $user->setPassword($password);
-        try {
-            $user->saveToDB($conn);
-            echo "Register OK";
-        } catch (PDOException $ex) {
-            echo "Error: " . $ex->getMessage();
-        }
-
-    }
+    return $errors;
 }
 
 ?>
