@@ -1,6 +1,6 @@
 <h2>Twitter</h2>
 
-OOP and MySql exercise.
+Back-end developer: PHP course workshop. OOP and MySql exercise.
 The aim of the workshop was to write a full and functional application based on Twitter. 
 
 The application implements the following functionalities:
